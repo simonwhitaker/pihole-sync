@@ -1,0 +1,14 @@
+HOST_CONFIGS = [
+    # Add one entry for each host you have running Pi-Hole
+    {
+        "address": "192.168.1.4",
+        # webpassword is the value of the WEBPASSWORD config variable in 
+        # /etc/pihole/setupVars.php. You can get it with this one-liner:
+        # ssh 192.168.1.4 cat /etc/pihole/setupVars.conf | grep WEBPASSWORD | cut -d= -f2
+        "webpassword": ""
+    },
+    {
+        "address": "192.168.1.5",
+        "webpassword": ""
+    }
+]
