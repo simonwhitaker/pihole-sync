@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 import json
-import urllib
 
 from enum import IntEnum
 from http.client import HTTPResponse
-from settings import *
 from typing import List, Set, Dict, Optional
 from urllib.parse import urlencode, urlunparse, ParseResult
 from urllib.request import urlopen
+
+from settings import HOST_CONFIGS
 
 class ListType(IntEnum):
     WHITELIST = 1
