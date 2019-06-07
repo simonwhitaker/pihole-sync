@@ -4,6 +4,8 @@ If you have multiple devices running [Pi-hole](https://pi-hole.net), keeping whi
 
 pihole-sync helps keep those lists in sync across your devices.
 
+Note: pihole-sync syncs whitelists and blacklists: the ones you see in the Whitelist and Blacklist tabs in the Pi-hole admin page. **It doesn't sync blocklists** (the URLs of lists of domains configured in Settings > Blocklists).
+
 # Setup
 
 ```
