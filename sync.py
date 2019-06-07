@@ -15,13 +15,6 @@ class ListType(IntEnum):
     BLACKLIST_EXACT = 2
     BLACKLIST_REGEX = 3
 
-    def name(self) -> str:
-        if self.value == self.WHITELIST:
-            return "whitelist"
-        if self.value == self.BLACKLIST_EXACT:
-            return "blacklist (exact)"
-        return "blacklist (regex)"
-
 class Host:
     address: str
     webpassword: str
@@ -92,7 +85,7 @@ class Host:
 
         print("+ Adding {} to {} on {}".format(
             entry,
-            list_type.name(),
+            list_type.name,
             self.address
         ))
 
@@ -175,7 +168,7 @@ def sync_lists(hosts: Set[Host]):
     for list_type in ListType:
         sync_count = _sync_list(hosts, list_type)
         print("{}: {} item(s) synced between hosts".format(
-            list_type.name(),
+            list_type.name,
             sync_count
         ))
 
