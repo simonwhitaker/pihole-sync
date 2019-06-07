@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
 import json
+import sys
 
 from enum import IntEnum
 from http.client import HTTPResponse
 from typing import List, Set, Dict, Optional
 from urllib.parse import urlencode, urlunparse, ParseResult
 from urllib.request import urlopen
-
-from settings import HOST_CONFIGS
 
 class ListType(IntEnum):
     WHITELIST = 1
@@ -107,6 +106,15 @@ def load_hosts_from_config() -> Set[Host]:
     """
     Gets a set of Host objects based on the config in settings.py
     """
+    try:
+        from settings import HOST_CONFIGS
+    except ModuleNotFoundError:
+        sys.stderr.write(
+            "Error: cound't import HOST_CONFIGS from settings. "
+            "Have you created your settings.py file?\n"
+        )
+        sys.exit(1)
+
     hosts = []
     for hc in HOST_CONFIGS:
         hosts.append(Host(hc["address"], hc["webpassword"]))
