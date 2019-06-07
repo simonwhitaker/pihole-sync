@@ -49,7 +49,7 @@ class Host:
 
     def get_list(self, list_type: ListType) -> List[str]:
         """
-        Gets the list of domains of the specified type and returns it
+        Returns the contents of the specified list
         """
         try:
             return self._list_cache[list_type]
@@ -75,7 +75,7 @@ class Host:
 
     def add_list_entry(self, entry: str, list_type: ListType):
         """
-        Adds an entry to the list of the specified type.
+        Adds an entry to the specified list
         """
         # Invalidate the cache
         try:
