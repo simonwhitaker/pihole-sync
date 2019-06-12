@@ -5,7 +5,6 @@ import sys
 
 from enum import IntEnum
 from http.client import HTTPResponse
-from typing import List, Set, Dict, Optional
 from urllib.parse import urlencode, urlunparse, ParseResult
 from urllib.request import urlopen
 
@@ -15,11 +14,11 @@ class ListType(IntEnum):
     BLACKLIST_REGEX = 3
 
 class Host:
-    address: str
-    webpassword: str
-    _list_cache: Dict[ListType, List[str]]
+    address = ""
+    webpassword = ""
+    _list_cache = {}
 
-    def __init__(self, address: str, webpassword: str):
+    def __init__(self, address, webpassword):
         self.address = address
         self.webpassword = webpassword
         self._list_cache = {}
@@ -27,7 +26,7 @@ class Host:
     def __str__(self):
         return self.address
 
-    def _api_call(self, query_params={}, auth=False) -> HTTPResponse:
+    def _api_call(self, query_params={}, auth=False):
         """
         Makes a call to the PHP API (/admin/api.php) with the specified query
         params. If auth is True, the call is authenticated with the host's
@@ -46,7 +45,7 @@ class Host:
         url = urlunparse(components)
         return urlopen(url)
 
-    def get_list(self, list_type: ListType) -> List[str]:
+    def get_list(self, list_type):
         """
         Returns the contents of the specified list
         """
@@ -59,7 +58,7 @@ class Host:
             response = self._api_call({"list": list_api_arg}, auth=True)
 
             # Parse the results
-            results = json.loads(response.read())
+            results = json.loads(response.read().decode())
 
             # Cache the results
             if list_type == ListType.WHITELIST:
@@ -72,7 +71,7 @@ class Host:
 
             return self._list_cache[list_type]
 
-    def add_list_entry(self, entry: str, list_type: ListType):
+    def add_list_entry(self, entry, list_type):
         """
         Adds an entry to the specified list
         """
@@ -93,7 +92,7 @@ class Host:
         # setting lists, the list arg is 'black', 'white' or 'regex' (or a
         # couple of others we don't use). See
         # https://github.com/pi-hole/AdminLTE/blob/master/scripts/pi-hole/php/add.php
-        list_api_arg: str
+        list_api_arg
         if list_type == ListType.WHITELIST:
             list_api_arg = "white"
         elif list_type == ListType.BLACKLIST_EXACT:
@@ -102,13 +101,13 @@ class Host:
             list_api_arg = "regex"
         self._api_call({ "list": list_api_arg, "add": entry }, auth=True)
 
-def load_hosts_from_config() -> Set[Host]:
+def load_hosts_from_config():
     """
     Gets a set of Host objects based on the config in settings.py
     """
     try:
         from settings import HOST_CONFIGS
-    except ModuleNotFoundError:
+    except ImportError:
         sys.stderr.write(
             "Error: cound't import HOST_CONFIGS from settings. "
             "Have you created your settings.py file?\n"
@@ -120,7 +119,7 @@ def load_hosts_from_config() -> Set[Host]:
         hosts.append(Host(hc["address"], hc["webpassword"]))
     return set(hosts)
 
-def _sync_list(hosts: Set[Host], list_type: ListType) -> int:
+def _sync_list(hosts, list_type):
     """
     Syncs the list of the specified type between all hosts. All hosts will end
     up with the union of all lists of this type.
@@ -140,7 +139,7 @@ def _sync_list(hosts: Set[Host], list_type: ListType) -> int:
 
     # First, build a dictionary mapping entries to a set of all the host(s) that
     # already have that entry in the appropriate list.
-    entries_per_host: Dict[str, Set[Host]] = {}
+    entries_per_host = {}
     for host in hosts:
         lst = host.get_list(list_type)
         for entry in lst:
@@ -168,7 +167,7 @@ def _sync_list(hosts: Set[Host], list_type: ListType) -> int:
             h.add_list_entry(entry, list_type)
     return sync_count
 
-def sync_lists(hosts: Set[Host]):
+def sync_lists(hosts):
     """
     Calls _sync_list for each list type. See that function for a discussion of
     the logic involved.
