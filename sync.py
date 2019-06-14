@@ -92,7 +92,7 @@ class Host:
         # setting lists, the list arg is 'black', 'white' or 'regex' (or a
         # couple of others we don't use). See
         # https://github.com/pi-hole/AdminLTE/blob/master/scripts/pi-hole/php/add.php
-        list_api_arg
+        list_api_arg = ""
         if list_type == ListType.WHITELIST:
             list_api_arg = "white"
         elif list_type == ListType.BLACKLIST_EXACT:
